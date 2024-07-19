@@ -12,10 +12,10 @@ module.exports = {
       name: { type: Sequelize.STRING },
       email: { type: Sequelize.STRING },
       password: { type: Sequelize.STRING },
-      role_code: { type: Sequelize.STRING },
+      role_code: { type: Sequelize.STRING, defaultValue: 'R3' },
       avatar: { type: Sequelize.STRING },
-      createdAt: { allowNull: false, type: Sequelize.DATE },
-      updatedAt: { allowNull: false, type: Sequelize.DATE }
+      createdAt: { allowNull: false, type: 'TIMESTAMP', defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') },
+      updatedAt: { allowNull: false, type: 'TIMESTAMP', defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') }
     });
   },
   async down(queryInterface, Sequelize) {
