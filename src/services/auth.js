@@ -19,7 +19,7 @@ export const register = ({ email, password }) => new Promise(async (resolve, rej
         resolve({
             err: response[1] ? 0 : 1,
             mes: response[1] ? 'Register is successfully' : 'Email is used',
-            token
+            'access_token': token ? `Bearer ${token}` : token
         })
         console.log(response[0]);
         resolve({
