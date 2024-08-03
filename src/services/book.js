@@ -1,5 +1,6 @@
 import db from "../models";
 import { Op } from "sequelize";
+import { v4 as generateId } from "uuid";
 
 // READ
 export const getBooks = ({ page, limit, order, name, available, ...query }) =>
@@ -7,7 +8,7 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
     try {
       // nest: true nghĩa là gom data khi join các bảng với nhau thành 1 object
       const queries = { raw: true, nest: true };
-      //   Nếu offset = 10 thì lấy từ thằng thứ 10 trở xuống
+      // Nếu offset = 10 thì lấy từ thằng thứ 10 trở xuống
       const offset = !page || +page <= 1 ? 0 : +page - 1;
       const fLimit = +limit || +process.env.LIMIT_BOOK;
       queries.offset = offset * fLimit;
@@ -18,6 +19,10 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
       const response = await db.Book.findAndCountAll({
         where: query,
         ...queries,
+        attributes: {
+          exclude: ["category_code"],
+        },
+        include: [{ model: db.Category, attributes: { exclude: ["createdAt", "updatedAt"] }, as: "categoryData" }],
       });
 
       resolve({
@@ -31,6 +36,24 @@ export const getBooks = ({ page, limit, order, name, available, ...query }) =>
   });
 
 // CREATE
+export const createNewBook = (body) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Book.findOrCreate({
+        where: { title: body?.title },
+        defaults: {
+          ...body,
+          id: generateId(),
+        },
+      });
+      resolve({
+        err: response[1] ? 0 : 1,
+        mes: response[1] ? "Created" : "Cannot create new book",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 
 // UPDATE
 
