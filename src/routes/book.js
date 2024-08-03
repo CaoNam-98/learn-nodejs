@@ -2,6 +2,7 @@ import * as controllers from "../controllers";
 import express from "express";
 import verifyToken from "../middlewares/verify_token";
 import { isAdmin } from "../middlewares/verify_role";
+import uploadCloud from "../middlewares/uploader";
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get("/", controllers.getBooks);
 // PRIVATE ROUTES
 router.use(verifyToken);
 router.use(isAdmin);
-router.post("/", controllers.createNewBook);
+// single là upload 1 ảnh, fields là upload nhiều ảnh gồm nhiều key: value
+router.post("/", uploadCloud.single("image"), controllers.createNewBook);
 
 module.exports = router;
