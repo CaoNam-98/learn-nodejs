@@ -46,6 +46,7 @@ export const createNewBook = (body, fileData) =>
           ...body,
           id: generateId(),
           image: fileData?.path,
+          filename: fileData?.filename,
         },
       });
       resolve({
@@ -83,7 +84,13 @@ export const updateBook = ({ bid, ...body }, fileData) =>
 
 // DELETE
 // [id1, id2]
-export const deleteBook = (bids) =>
+/*
+params = {
+  bids: [id1, id2],
+  filename: [filename1, filename2]
+}
+*/
+export const deleteBook = (bids, filename) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await db.Book.destroy({
@@ -93,6 +100,7 @@ export const deleteBook = (bids) =>
         err: response > 0 ? 0 : 1,
         mes: `${response} book(s) deleted`,
       });
+      cloudinary.api.delete_resources(filename);
     } catch (error) {
       reject(error);
     }
