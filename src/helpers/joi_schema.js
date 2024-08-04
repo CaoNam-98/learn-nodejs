@@ -12,3 +12,5 @@ export const bid = joi.string().required();
 export const bids = joi.array().required();
 export const name = joi.string();
 export const filename = joi.array().required();
+export const description = joi.string().required();
+export const refreshToken = joi.string().required();
